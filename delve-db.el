@@ -223,9 +223,10 @@ specific query for special usecases."
 	   :left :join files :using [[ file ]]
 	   :left :join tags :using  [[ file ]] ]))
     (with-temp-message "Querying database..."
-      (thread-last (delve-db-safe-query
+      (thread-last (apply
+        #'delve-db-safe-query
 		    (vconcat with-clause base-query constraints)
-		    args)
+		    (if (listp args) args (list args)))
 	(delve-db-rearrange-into make-fn
 				 `[ :file 0
 				    :title 1
